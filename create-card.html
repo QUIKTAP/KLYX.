@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLYX — إنشاء بطاقتك الرقمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --white: #ffffff;
+    --off-white: #f8f7ff;
+    --purple: #7c3aed;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --grad: linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%);
+    --grad-soft: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.07));
+    --text: #1a1040;
+    --text-soft: #64748b;
+    --border: rgba(124,58,237,0.15);
+    --shadow: 0 20px 60px rgba(124,58,237,0.18);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--white);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: linear-gradient(155deg, #f9f8ff 0%, #fff 45%, #f0f4ff 100%);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 18px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(255,255,255,.93);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 20px rgba(124,58,237,.06);
+  }
+  .logo-klyx {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.55rem;
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: .04em; text-decoration: none;
+  }
+  .nav-steps { display: flex; gap: 0; align-items: center; }
+  .nav-step {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .78rem; font-weight: 600; color: var(--text-soft);
+    padding: 6px 14px;
+  }
+  .nav-step.active { color: var(--purple); }
+  .nav-step .sn {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(124,58,237,.1); border: 1.5px solid rgba(124,58,237,.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 800; color: var(--purple);
+  }
+  .nav-step.active .sn { background: var(--grad); color: white; border-color: transparent; }
+  .nav-step.done .sn { background: #22c55e; color: white; border-color: transparent; }
+  .step-sep { width: 24px; height: 1px; background: var(--border); }
+
+  /* MAIN LAYOUT */
+  .page-wrap {
+    padding: 100px 24px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  /* FORM PANEL */
+  .form-panel {
+    background: white;
+    border: 1.5px solid rgba(124,58,237,.12);
+    border-radius: 28px;
+    padding: 44px 40px;
+    box-shadow: 0 20px 60px rgba(124,58,237,.08);
+    animation: up .6s .1s both;
+  }
+  @keyframes up { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+
+  .form-header { margin-bottom: 36px; }
+  .section-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2);
+    color: var(--purple); font-size: .72rem; font-weight: 700;
+    padding: 5px 15px; border-radius: 50px; margin-bottom: 14px; letter-spacing: .05em;
+  }
+  .dot { width: 6px; height: 6px; background: var(--purple); border-radius: 50%; animation: blink 1.8s infinite; }
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+  .form-title {
+    font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+    color: var(--text); line-height: 1.2; margin-bottom: 8px;
+  }
+  .grad-text {
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .form-sub { font-size: .88rem; color: var(--text-soft); line-height: 1.6; }
+
+  /* FORM SECTIONS */
+  .form-section { margin-bottom: 32px; }
+  .form-section-label {
+    font-size: .72rem; font-weight: 700; color: var(--purple);
+    letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid rgba(124,58,237,.1);
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid.single { grid-template-columns: 1fr; }
+
+  .field-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-size: .78rem; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-label .fi { font-size: .9rem; }
+
+  .field {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid rgba(124,58,237,.18);
+    border-radius: 13px; font-family: 'Tajawal', sans-serif;
+    font-size: .92rem; color: var(--text);
+    outline: none; background: #fafaff;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .field:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(124,58,237,.1);
+    background: white;
+  }
+  .field::placeholder { color: #bbb; font-size: .85rem; }
+  .field[dir="ltr"] { text-align: left; }
+
+  /* LOGO UPLOAD */
+  .logo-upload-area {
+    border: 2px dashed rgba(124,58,237,.3);
+    border-radius: 16px; padding: 28px 20px;
+    text-align: center; cursor: pointer;
+    background: rgba(124,58,237,.03);
+    transition: border-color .3s, background .3s;
+    position: relative; overflow: hidden;
+  }
+  .logo-upload-area:hover { border-color: var(--purple); background: rgba(124,58,237,.06); }
+  .logo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+  .upload-icon {
+    width: 52px; height: 52px;
+    background: var(--grad-soft); border: 1px solid rgba(124,58,237,.2);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin: 0 auto 12px;
+  }
+  .upload-text { font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .upload-hint { font-size: .72rem; color: var(--text-soft); }
+  #logoPreview {
+    width: 72px; height: 72px; border-radius: 50%;
+    object-fit: cover; border: 3px solid white;
+    box-shadow: 0 6px 20px rgba(124,58,237,.25);
+    display: none; margin: 0 auto 10px;
+  }
+
+  /* ACTION BUTTONS */
+  .form-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; }
+  .btn-primary {
+    width: 100%; padding: 16px;
+    background: var(--grad); color: white; border: none;
+    border-radius: 50px; font-family: 'Tajawal', sans-serif;
+    font-weight: 700; font-size: 1rem; cursor: pointer;
+    box-shadow: 0 8px 28px rgba(124,58,237,.42);
+    transition: transform .2s, box-shadow .3s;
+    letter-spacing: .02em;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(124,58,237,.55); }
+  .btn-secondary {
+    width: 100%; padding: 14px;
+    background: transparent; color: var(--purple);
+    border: 1.5px solid rgba(124,58,237,.3);
+    border-radius: 50px; font-family: 'Tajawal', sans-serif;
+    font-weight: 700; font-size: .95rem; cursor: pointer;
+    transition: background .2s, border-color .2s, transform .2s;
+  }
+  .btn-secondary:hover { background: rgba(124,58,237,.06); border-color: var(--purple); transform: translateY(-2px); }
+
+  /* PREVIEW PANEL */
+  .preview-panel {
+    position: sticky; top: 100px;
+    animation: up .6s .3s both;
+  }
+  .preview-label {
+    font-size: .72rem; font-weight: 700; color: var(--purple);
+    letter-spacing: .08em; text-align: center;
+    margin-bottom: 18px;
+  }
+
+  /* DIGITAL CARD PREVIEW */
+  .card-preview {
+    background: linear-gradient(160deg, #1a1040, #0f0a2e);
+    border-radius: 28px; padding: 32px 24px 28px;
+    box-shadow: 0 40px 90px rgba(124,58,237,.35), 0 0 0 1px rgba(124,58,237,.2);
+    position: relative; overflow: hidden;
+    min-height: 520px;
+  }
+  .card-preview::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(124,58,237,.25), transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(59,130,246,.15), transparent 50%);
+    pointer-events: none;
+  }
+  .cp-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(124,58,237,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .cp-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; position: relative; z-index: 2;
+  }
+  .cp-brand {
+    font-family: 'Syne', sans-serif; font-size: .75rem; font-weight: 800;
+    background: var(--grad); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+    letter-spacing: .1em;
+  }
+  .cp-nfc {
+    width: 32px; height: 32px; border: 1.5px solid rgba(124,58,237,.4);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: .5rem; font-weight: 800; color: rgba(124,58,237,.6);
+    font-family: 'Syne', sans-serif;
+  }
+
+  .cp-avatar-wrap {
+    display: flex; justify-content: center; margin-bottom: 20px;
+    position: relative; z-index: 2;
+  }
+  .cp-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 3px solid rgba(124,58,237,.4);
+    box-shadow: 0 8px 28px rgba(124,58,237,.35);
+    background: var(--grad);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
+    color: white; overflow: hidden;
+  }
+  .cp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .cp-info { text-align: center; margin-bottom: 24px; position: relative; z-index: 2; }
+  .cp-name {
+    font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+    color: white; margin-bottom: 4px;
+  }
+  .cp-role { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: 12px; }
+  .cp-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(124,58,237,.25); border: 1px solid rgba(124,58,237,.4);
+    border-radius: 50px; padding: 3px 10px;
+    font-size: .62rem; color: rgba(255,255,255,.7); font-weight: 600;
+  }
+  .cp-bd { width: 5px; height: 5px; background: #22c55e; border-radius: 50%; animation: blink 1.5s infinite; }
+
+  .cp-links { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 2; }
+  .cp-link {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px; padding: 10px 14px;
+    transition: background .2s;
+  }
+  .cp-link:hover { background: rgba(255,255,255,.1); }
+  .cp-link-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; flex-shrink: 0;
+  }
+  .cp-link span { font-size: .78rem; color: rgba(255,255,255,.75); font-weight: 500; }
+
+  .cp-save-btn {
+    width: 100%; margin-top: 18px; padding: 12px;
+    background: var(--grad); border: none; border-radius: 50px;
+    font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .85rem;
+    color: white; cursor: default;
+    box-shadow: 0 6px 20px rgba(124,58,237,.4);
+    position: relative; z-index: 2;
+  }
+
+  /* PAYMENT PAGE transition hint */
+  .step-indicator {
+    display: flex; gap: 6px; justify-content: center; margin-top: 20px;
+  }
+  .si { width: 8px; height: 8px; border-radius: 50%; background: rgba(124,58,237,.2); }
+  .si.active { background: var(--grad); width: 24px; border-radius: 50px; }
+
+  @media(max-width: 900px){
+    nav { padding: 16px 18px; }
+    .nav-steps { display: none; }
+    .page-wrap { grid-template-columns: 1fr; padding: 88px 16px 60px; gap: 28px; }
+    .form-panel { padding: 30px 22px; border-radius: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .preview-panel { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo-klyx">KLYX</a>
+  <div class="nav-steps">
+    <div class="nav-step done">
+      <div class="sn">✓</div>
+      <span>الطلب</span>
+    </div>
+    <div class="step-sep"></div>
+    <div class="nav-step active">
+      <div class="sn">2</div>
+      <span>البطاقة الرقمية</span>
+    </div>
+    <div class="step-sep"></div>
+    <div class="nav-step">
+      <div class="sn">3</div>
+      <span>الدفع</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="form-header">
+      <div class="section-pill"><div class="dot"></div>الخطوة 2 من 3</div>
+      <h1 class="form-title">أنشئ <span class="grad-text">بطاقتك الرقمية</span></h1>
+      <p class="form-sub">بطاقتك الرقمية ستظهر عند المسح بالـ NFC أو الـ QR</p>
+    </div>
+
+    <!-- LOGO -->
+    <div class="form-section">
+      <div class="form-section-label">🖼 الصورة / الشعار</div>
+      <div class="logo-upload-area" id="uploadArea" onclick="document.getElementById('logoInput').click()">
+        <img id="logoPreview" src="" alt="preview" />
+        <div class="upload-icon" id="uploadIcon">📸</div>
+        <div class="upload-text" id="uploadText">ارفع صورتك أو شعار شركتك</div>
+        <div class="upload-hint">PNG, JPG أو SVG — حتى 2MB</div>
+        <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(event)" />
+      </div>
+    </div>
+
+    <!-- PERSONAL INFO -->
+    <div class="form-section">
+      <div class="form-section-label">👤 المعلومات الشخصية</div>
+      <div class="form-grid">
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">✏️</span> الاسم الكامل</label>
+          <input class="field" id="fullName" placeholder="مثال: أحمد بن علي" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">💼</span> المسمى الوظيفي</label>
+          <input class="field" id="jobTitle" placeholder="مثال: مصمم جرافيك" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="form-section">
+      <div class="form-section-label">📞 وسائل التواصل</div>
+      <div class="form-grid">
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">📱</span> رقم الهاتف</label>
+          <input class="field" id="cardPhone" dir="ltr" placeholder="+216 XX XXX XXX" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">💬</span> واتساب</label>
+          <input class="field" id="whatsapp" dir="ltr" placeholder="+216 XX XXX XXX" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">✉️</span> البريد الإلكتروني</label>
+          <input class="field" id="email" dir="ltr" placeholder="you@example.com" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">🌐</span> الموقع الإلكتروني</label>
+          <input class="field" id="website" dir="ltr" placeholder="www.yoursite.com" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="form-section">
+      <div class="form-section-label">🔗 وسائل التواصل الاجتماعي</div>
+      <div class="form-grid">
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">📸</span> Instagram</label>
+          <input class="field" id="instagram" dir="ltr" placeholder="@username" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">👥</span> Facebook</label>
+          <input class="field" id="facebook" dir="ltr" placeholder="facebook.com/page" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label"><span class="fi">💼</span> LinkedIn</label>
+          <input class="field" id="linkedin" dir="ltr" placeholder="linkedin.com/in/you" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" onclick="continueToPayment()">المتابعة إلى الدفع ←</button>
+      <button class="btn-secondary" onclick="saveAndExit()">💾 حفظ والمتابعة لاحقاً</button>
+    </div>
+  </div>
+
+  <!-- LIVE PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-label">✨ معاينة بطاقتك الرقمية</div>
+    <div class="card-preview">
+      <div class="cp-grid"></div>
+      <div class="cp-top">
+        <span class="cp-brand">KLYX</span>
+        <div class="cp-nfc">NFC</div>
+      </div>
+      <div class="cp-avatar-wrap">
+        <div class="cp-avatar" id="previewAvatar">K</div>
+      </div>
+      <div class="cp-info">
+        <div class="cp-name" id="previewName">اسمك هنا</div>
+        <div class="cp-role" id="previewRole">مسماك الوظيفي</div>
+        <div class="cp-badge"><div class="cp-bd"></div>بطاقة KLYX الرقمية</div>
+      </div>
+      <div class="cp-links" id="previewLinks">
+        <div class="cp-link">
+          <div class="cp-link-icon" style="background:rgba(34,197,94,.15);">📱</div>
+          <span id="previewPhone">رقم هاتفك</span>
+        </div>
+        <div class="cp-link">
+          <div class="cp-link-icon" style="background:rgba(37,211,102,.15);">💬</div>
+          <span id="previewWhatsapp">واتساب</span>
+        </div>
+        <div class="cp-link">
+          <div class="cp-link-icon" style="background:rgba(124,58,237,.15);">✉️</div>
+          <span id="previewEmail">بريدك الإلكتروني</span>
+        </div>
+        <div class="cp-link">
+          <div class="cp-link-icon" style="background:rgba(225,48,108,.15);">📸</div>
+          <span id="previewInstagram">Instagram</span>
+        </div>
+      </div>
+      <button class="cp-save-btn">💾 حفظ في جهات الاتصال</button>
+    </div>
+    <div class="step-indicator">
+      <div class="si"></div>
+      <div class="si active"></div>
+      <div class="si"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Load order data from previous step
+  const order = JSON.parse(sessionStorage.getItem('klyxOrder') || '{}');
+  if (order.name) {
+    document.getElementById('fullName').value = order.name;
+    document.getElementById('cardPhone').value = order.phone || '';
+    updatePreview();
+  }
+
+  function handleLogo(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const src = ev.target.result;
+      const prev = document.getElementById('logoPreview');
+      prev.src = src;
+      prev.style.display = 'block';
+      document.getElementById('uploadIcon').style.display = 'none';
+      document.getElementById('uploadText').textContent = 'تم رفع الصورة ✓';
+
+      // Update card preview avatar
+      const avatar = document.getElementById('previewAvatar');
+      avatar.innerHTML = `<img src="${src}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+
+      sessionStorage.setItem('klyxLogo', src);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updatePreview() {
+    const name = document.getElementById('fullName').value || 'اسمك هنا';
+    const role = document.getElementById('jobTitle').value || 'مسماك الوظيفي';
+    const phone = document.getElementById('cardPhone').value || 'رقم هاتفك';
+    const wa = document.getElementById('whatsapp').value || 'واتساب';
+    const email = document.getElementById('email').value || 'بريدك الإلكتروني';
+    const ig = document.getElementById('instagram').value || 'Instagram';
+
+    document.getElementById('previewName').textContent = name;
+    document.getElementById('previewRole').textContent = role;
+    document.getElementById('previewPhone').textContent = phone;
+    document.getElementById('previewWhatsapp').textContent = wa;
+    document.getElementById('previewEmail').textContent = email;
+    document.getElementById('previewInstagram').textContent = ig;
+
+    // Update avatar initials
+    const avatar = document.getElementById('previewAvatar');
+    if (!document.getElementById('logoPreview').style.display || document.getElementById('logoPreview').style.display === 'none') {
+      avatar.textContent = name.charAt(0).toUpperCase() || 'K';
+    }
+  }
+
+  function saveCardData() {
+    const cardData = {
+      fullName: document.getElementById('fullName').value,
+      jobTitle: document.getElementById('jobTitle').value,
+      phone: document.getElementById('cardPhone').value,
+      whatsapp: document.getElementById('whatsapp').value,
+      email: document.getElementById('email').value,
+      website: document.getElementById('website').value,
+      instagram: document.getElementById('instagram').value,
+      facebook: document.getElementById('facebook').value,
+      linkedin: document.getElementById('linkedin').value,
+      logo: sessionStorage.getItem('klyxLogo') || '',
+    };
+    sessionStorage.setItem('klyxCard', JSON.stringify(cardData));
+    return cardData;
+  }
+
+  function continueToPayment() {
+    const name = document.getElementById('fullName').value.trim();
+    if (!name) { alert('من فضلك أدخل اسمك الكامل'); return; }
+    saveCardData();
+    window.location.href = 'payment.html';
+  }
+
+  function saveAndExit() {
+    saveCardData();
+    alert('تم حفظ البيانات. يمكنك المتابعة لاحقاً من نفس المتصفح.');
+  }
+</script>
+</body>
+</html>
