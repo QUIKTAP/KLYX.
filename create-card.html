@@ -1,3 +1,6 @@
+bash
+
+cat > /mnt/user-data/outputs/klyx/create-card.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,322 +11,153 @@
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --white: #ffffff;
-    --off-white: #f8f7ff;
-    --purple: #7c3aed;
-    --blue: #3b82f6;
-    --cyan: #06b6d4;
+    --white: #ffffff; --off-white: #f8f7ff;
+    --purple: #7c3aed; --blue: #3b82f6; --cyan: #06b6d4;
     --grad: linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%);
     --grad-soft: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.07));
-    --text: #1a1040;
-    --text-soft: #64748b;
+    --text: #1a1040; --text-soft: #64748b;
     --border: rgba(124,58,237,0.15);
     --shadow: 0 20px 60px rgba(124,58,237,0.18);
+    /* Theme vars */
+    --th-grad: linear-gradient(135deg, #7c3aed 0%, #3b82f6 50%, #06b6d4 100%);
+    --th-glow: rgba(124,58,237,0.45);
+    --th-bg1: #1a1040; --th-bg2: #0f0a2e;
   }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--white);
-    color: var(--text);
-    font-family: 'Tajawal', sans-serif;
-    overflow-x: hidden;
-    min-height: 100vh;
     background: linear-gradient(155deg, #f9f8ff 0%, #fff 45%, #f0f4ff 100%);
+    color: var(--text); font-family: 'Tajawal', sans-serif;
+    min-height: 100vh; overflow-x: hidden;
   }
-
   /* NAV */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 18px 60px;
+    padding: 14px 48px;
     display: flex; justify-content: space-between; align-items: center;
-    background: rgba(255,255,255,.93);
-    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,.93); backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 2px 20px rgba(124,58,237,.06);
   }
   .logo-klyx {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.55rem;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.45rem;
     background: var(--grad); -webkit-background-clip: text;
     -webkit-text-fill-color: transparent; background-clip: text;
-    letter-spacing: .04em; text-decoration: none;
+    text-decoration: none; letter-spacing: .04em;
   }
-  .nav-steps { display: flex; gap: 0; align-items: center; }
-  .nav-step {
-    display: flex; align-items: center; gap: 8px;
-    font-size: .78rem; font-weight: 600; color: var(--text-soft);
-    padding: 6px 14px;
-  }
+  .nav-center { display: flex; align-items: center; gap: 0; }
+  .nav-step { display: flex; align-items: center; gap: 7px; font-size: .76rem; font-weight: 600; color: var(--text-soft); padding: 5px 12px; }
   .nav-step.active { color: var(--purple); }
-  .nav-step .sn {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: rgba(124,58,237,.1); border: 1.5px solid rgba(124,58,237,.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: .7rem; font-weight: 800; color: var(--purple);
-  }
+  .nav-step .sn { width: 22px; height: 22px; border-radius: 50%; background: rgba(124,58,237,.1); border: 1.5px solid rgba(124,58,237,.25); display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; color: var(--purple); }
   .nav-step.active .sn { background: var(--grad); color: white; border-color: transparent; }
   .nav-step.done .sn { background: #22c55e; color: white; border-color: transparent; }
-  .step-sep { width: 24px; height: 1px; background: var(--border); }
-
-  /* MAIN LAYOUT */
-  .page-wrap {
-    padding: 100px 24px 60px;
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 40px;
-    align-items: start;
-  }
-
+  .step-sep { width: 20px; height: 1px; background: var(--border); }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  /* LANG SWITCHER */
+  .lang-switcher { display: flex; background: rgba(124,58,237,.07); border: 1px solid rgba(124,58,237,.2); border-radius: 50px; padding: 3px; gap: 2px; }
+  .lang-btn { padding: 5px 12px; border-radius: 50px; border: none; background: transparent; font-family: 'Tajawal', sans-serif; font-size: .74rem; font-weight: 700; color: var(--text-soft); cursor: pointer; transition: background .2s, color .2s; }
+  .lang-btn.active { background: var(--grad); color: white; box-shadow: 0 2px 10px rgba(124,58,237,.35); }
+  /* MAIN */
+  .page-wrap { padding: 96px 20px 60px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 360px; gap: 36px; align-items: start; }
   /* FORM PANEL */
-  .form-panel {
-    background: white;
-    border: 1.5px solid rgba(124,58,237,.12);
-    border-radius: 28px;
-    padding: 44px 40px;
-    box-shadow: 0 20px 60px rgba(124,58,237,.08);
-    animation: up .6s .1s both;
-  }
+  .form-panel { background: white; border: 1.5px solid rgba(124,58,237,.12); border-radius: 28px; padding: 40px 36px; box-shadow: 0 20px 60px rgba(124,58,237,.08); animation: up .6s .1s both; }
   @keyframes up { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
-
-  .form-header { margin-bottom: 36px; }
-  .section-pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2);
-    color: var(--purple); font-size: .72rem; font-weight: 700;
-    padding: 5px 15px; border-radius: 50px; margin-bottom: 14px; letter-spacing: .05em;
-  }
+  .section-pill { display: inline-flex; align-items: center; gap: 7px; background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); color: var(--purple); font-size: .72rem; font-weight: 700; padding: 5px 15px; border-radius: 50px; margin-bottom: 14px; letter-spacing: .05em; }
   .dot { width: 6px; height: 6px; background: var(--purple); border-radius: 50%; animation: blink 1.8s infinite; }
   @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
-  .form-title {
-    font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
-    color: var(--text); line-height: 1.2; margin-bottom: 8px;
-  }
-  .grad-text {
-    background: var(--grad); -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .form-sub { font-size: .88rem; color: var(--text-soft); line-height: 1.6; }
-
+  .form-title { font-family: 'Syne', sans-serif; font-size: 1.85rem; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+  .grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .form-sub { font-size: .86rem; color: var(--text-soft); line-height: 1.6; margin-bottom: 28px; }
   /* FORM SECTIONS */
-  .form-section { margin-bottom: 32px; }
-  .form-section-label {
-    font-size: .72rem; font-weight: 700; color: var(--purple);
-    letter-spacing: .08em; text-transform: uppercase;
-    margin-bottom: 14px; padding-bottom: 10px;
-    border-bottom: 1px solid rgba(124,58,237,.1);
-  }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-grid.single { grid-template-columns: 1fr; }
-
-  .field-wrap { display: flex; flex-direction: column; gap: 6px; }
-  .field-label {
-    font-size: .78rem; font-weight: 600; color: var(--text);
-    display: flex; align-items: center; gap: 6px;
-  }
-  .field-label .fi { font-size: .9rem; }
-
-  .field {
-    width: 100%; padding: 13px 16px;
-    border: 1.5px solid rgba(124,58,237,.18);
-    border-radius: 13px; font-family: 'Tajawal', sans-serif;
-    font-size: .92rem; color: var(--text);
-    outline: none; background: #fafaff;
-    transition: border-color .2s, box-shadow .2s, background .2s;
-  }
-  .field:focus {
-    border-color: var(--purple);
-    box-shadow: 0 0 0 3px rgba(124,58,237,.1);
-    background: white;
-  }
-  .field::placeholder { color: #bbb; font-size: .85rem; }
+  .form-section { margin-bottom: 28px; }
+  .form-section-label { font-size: .7rem; font-weight: 700; color: var(--purple); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid rgba(124,58,237,.1); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid.cols1 { grid-template-columns: 1fr; }
+  .form-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .field-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .field-label { font-size: .76rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 5px; }
+  .field { width: 100%; padding: 12px 15px; border: 1.5px solid rgba(124,58,237,.18); border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: .9rem; color: var(--text); outline: none; background: #fafaff; transition: border-color .2s, box-shadow .2s; }
+  .field:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(124,58,237,.1); background: white; }
+  .field::placeholder { color: #bbb; font-size: .83rem; }
   .field[dir="ltr"] { text-align: left; }
-
   /* LOGO UPLOAD */
-  .logo-upload-area {
-    border: 2px dashed rgba(124,58,237,.3);
-    border-radius: 16px; padding: 28px 20px;
-    text-align: center; cursor: pointer;
-    background: rgba(124,58,237,.03);
-    transition: border-color .3s, background .3s;
-    position: relative; overflow: hidden;
-  }
+  .logo-upload-area { border: 2px dashed rgba(124,58,237,.3); border-radius: 16px; padding: 24px 16px; text-align: center; cursor: pointer; background: rgba(124,58,237,.03); transition: border-color .3s, background .3s; position: relative; overflow: hidden; }
   .logo-upload-area:hover { border-color: var(--purple); background: rgba(124,58,237,.06); }
-  .logo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-  .upload-icon {
-    width: 52px; height: 52px;
-    background: var(--grad-soft); border: 1px solid rgba(124,58,237,.2);
-    border-radius: 14px; display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; margin: 0 auto 12px;
-  }
-  .upload-text { font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .upload-hint { font-size: .72rem; color: var(--text-soft); }
-  #logoPreview {
-    width: 72px; height: 72px; border-radius: 50%;
-    object-fit: cover; border: 3px solid white;
-    box-shadow: 0 6px 20px rgba(124,58,237,.25);
-    display: none; margin: 0 auto 10px;
-  }
-
-  /* ACTION BUTTONS */
-  .form-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; }
-  .btn-primary {
-    width: 100%; padding: 16px;
-    background: var(--grad); color: white; border: none;
-    border-radius: 50px; font-family: 'Tajawal', sans-serif;
-    font-weight: 700; font-size: 1rem; cursor: pointer;
-    box-shadow: 0 8px 28px rgba(124,58,237,.42);
-    transition: transform .2s, box-shadow .3s;
-    letter-spacing: .02em;
-  }
+  .logo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { width: 48px; height: 48px; background: var(--grad-soft); border: 1px solid rgba(124,58,237,.2); border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin: 0 auto 10px; }
+  .upload-text { font-size: .83rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .upload-hint { font-size: .7rem; color: var(--text-soft); }
+  #logoPreview { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 6px 20px rgba(124,58,237,.25); display: none; margin: 0 auto 8px; }
+  /* COLOR THEMES */
+  .themes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 4px; }
+  .theme-opt { border: 2px solid transparent; border-radius: 12px; padding: 10px 6px; text-align: center; cursor: pointer; transition: border-color .2s, transform .2s; background: rgba(124,58,237,.03); }
+  .theme-opt:hover { transform: translateY(-2px); }
+  .theme-opt.selected { border-color: var(--purple); background: rgba(124,58,237,.08); }
+  .theme-swatch { width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 6px; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+  .theme-name { font-size: .62rem; font-weight: 700; color: var(--text-soft); }
+  /* ACTIONS */
+  .form-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+  .btn-primary { width: 100%; padding: 15px; background: var(--grad); color: white; border: none; border-radius: 50px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .98rem; cursor: pointer; box-shadow: 0 8px 28px rgba(124,58,237,.42); transition: transform .2s, box-shadow .3s; }
   .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(124,58,237,.55); }
-  .btn-secondary {
-    width: 100%; padding: 14px;
-    background: transparent; color: var(--purple);
-    border: 1.5px solid rgba(124,58,237,.3);
-    border-radius: 50px; font-family: 'Tajawal', sans-serif;
-    font-weight: 700; font-size: .95rem; cursor: pointer;
-    transition: background .2s, border-color .2s, transform .2s;
-  }
-  .btn-secondary:hover { background: rgba(124,58,237,.06); border-color: var(--purple); transform: translateY(-2px); }
-
+  .btn-secondary { width: 100%; padding: 13px; background: transparent; color: var(--purple); border: 1.5px solid rgba(124,58,237,.3); border-radius: 50px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .93rem; cursor: pointer; transition: background .2s, transform .2s; }
+  .btn-secondary:hover { background: rgba(124,58,237,.06); transform: translateY(-2px); }
   /* PREVIEW PANEL */
-  .preview-panel {
-    position: sticky; top: 100px;
-    animation: up .6s .3s both;
-  }
-  .preview-label {
-    font-size: .72rem; font-weight: 700; color: var(--purple);
-    letter-spacing: .08em; text-align: center;
-    margin-bottom: 18px;
-  }
-
-  /* DIGITAL CARD PREVIEW */
+  .preview-panel { position: sticky; top: 96px; animation: up .6s .25s both; }
+  .preview-label { font-size: .72rem; font-weight: 700; color: var(--purple); letter-spacing: .08em; text-align: center; margin-bottom: 14px; }
   .card-preview {
-    background: linear-gradient(160deg, #1a1040, #0f0a2e);
-    border-radius: 28px; padding: 32px 24px 28px;
-    box-shadow: 0 40px 90px rgba(124,58,237,.35), 0 0 0 1px rgba(124,58,237,.2);
-    position: relative; overflow: hidden;
-    min-height: 520px;
+    background: linear-gradient(160deg, var(--th-bg1), var(--th-bg2));
+    border-radius: 28px; padding: 28px 22px 24px;
+    box-shadow: 0 40px 90px var(--th-glow), 0 0 0 1px rgba(124,58,237,.2);
+    position: relative; overflow: hidden; min-height: 500px;
+    transition: background .5s;
   }
-  .card-preview::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(124,58,237,.25), transparent 60%),
-                radial-gradient(circle at 80% 80%, rgba(59,130,246,.15), transparent 50%);
-    pointer-events: none;
-  }
-  .cp-grid {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(124,58,237,.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,58,237,.06) 1px, transparent 1px);
-    background-size: 28px 28px;
-  }
-
-  .cp-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 28px; position: relative; z-index: 2;
-  }
-  .cp-brand {
-    font-family: 'Syne', sans-serif; font-size: .75rem; font-weight: 800;
-    background: var(--grad); -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; background-clip: text;
-    letter-spacing: .1em;
-  }
-  .cp-nfc {
-    width: 32px; height: 32px; border: 1.5px solid rgba(124,58,237,.4);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: .5rem; font-weight: 800; color: rgba(124,58,237,.6);
-    font-family: 'Syne', sans-serif;
-  }
-
-  .cp-avatar-wrap {
-    display: flex; justify-content: center; margin-bottom: 20px;
-    position: relative; z-index: 2;
-  }
-  .cp-avatar {
-    width: 80px; height: 80px; border-radius: 50%;
-    border: 3px solid rgba(124,58,237,.4);
-    box-shadow: 0 8px 28px rgba(124,58,237,.35);
-    background: var(--grad);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
-    color: white; overflow: hidden;
-  }
+  .card-preview::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(124,58,237,.25), transparent 60%), radial-gradient(circle at 80% 80%, rgba(59,130,246,.15), transparent 50%); pointer-events: none; }
+  .cp-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(124,58,237,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,.06) 1px, transparent 1px); background-size: 26px 26px; }
+  .cp-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; position: relative; z-index: 2; }
+  .cp-brand { font-family: 'Syne', sans-serif; font-size: .72rem; font-weight: 800; background: var(--th-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: .1em; }
+  .cp-nfc { width: 30px; height: 30px; border: 1.5px solid rgba(124,58,237,.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .48rem; font-weight: 800; color: rgba(124,58,237,.7); font-family: 'Syne', sans-serif; }
+  .cp-avatar-wrap { display: flex; justify-content: center; margin-bottom: 16px; position: relative; z-index: 2; }
+  .cp-avatar { width: 76px; height: 76px; border-radius: 50%; border: 3px solid rgba(124,58,237,.4); box-shadow: 0 8px 28px var(--th-glow); background: var(--th-grad); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: white; overflow: hidden; transition: background .5s; }
   .cp-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-  .cp-info { text-align: center; margin-bottom: 24px; position: relative; z-index: 2; }
-  .cp-name {
-    font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
-    color: white; margin-bottom: 4px;
-  }
-  .cp-role { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: 12px; }
-  .cp-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(124,58,237,.25); border: 1px solid rgba(124,58,237,.4);
-    border-radius: 50px; padding: 3px 10px;
-    font-size: .62rem; color: rgba(255,255,255,.7); font-weight: 600;
-  }
+  .cp-info { text-align: center; margin-bottom: 18px; position: relative; z-index: 2; }
+  .cp-name { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800; color: white; margin-bottom: 3px; }
+  .cp-role { font-size: .76rem; color: rgba(255,255,255,.5); margin-bottom: 10px; }
+  .cp-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124,58,237,.25); border: 1px solid rgba(124,58,237,.4); border-radius: 50px; padding: 3px 10px; font-size: .6rem; color: rgba(255,255,255,.7); font-weight: 600; }
   .cp-bd { width: 5px; height: 5px; background: #22c55e; border-radius: 50%; animation: blink 1.5s infinite; }
-
-  .cp-links { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 2; }
-  .cp-link {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-    border-radius: 12px; padding: 10px 14px;
-    transition: background .2s;
-  }
-  .cp-link:hover { background: rgba(255,255,255,.1); }
-  .cp-link-icon {
-    width: 30px; height: 30px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: .85rem; flex-shrink: 0;
-  }
-  .cp-link span { font-size: .78rem; color: rgba(255,255,255,.75); font-weight: 500; }
-
-  .cp-save-btn {
-    width: 100%; margin-top: 18px; padding: 12px;
-    background: var(--grad); border: none; border-radius: 50px;
-    font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .85rem;
-    color: white; cursor: default;
-    box-shadow: 0 6px 20px rgba(124,58,237,.4);
-    position: relative; z-index: 2;
-  }
-
-  /* PAYMENT PAGE transition hint */
-  .step-indicator {
-    display: flex; gap: 6px; justify-content: center; margin-top: 20px;
-  }
+  .cp-links { display: flex; flex-direction: column; gap: 7px; position: relative; z-index: 2; max-height: 220px; overflow: hidden; }
+  .cp-link { display: flex; align-items: center; gap: 9px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 11px; padding: 9px 12px; }
+  .cp-link-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .8rem; flex-shrink: 0; }
+  .cp-link span { font-size: .74rem; color: rgba(255,255,255,.75); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; }
+  .cp-save-btn { width: 100%; margin-top: 14px; padding: 11px; background: var(--th-grad); border: none; border-radius: 50px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: .82rem; color: white; cursor: default; box-shadow: 0 5px 18px var(--th-glow); position: relative; z-index: 2; transition: background .5s; }
+  .step-indicator { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
   .si { width: 8px; height: 8px; border-radius: 50%; background: rgba(124,58,237,.2); }
-  .si.active { background: var(--grad); width: 24px; border-radius: 50px; }
-
+  .si.active { background: var(--grad); width: 22px; border-radius: 50px; }
   @media(max-width: 900px){
-    nav { padding: 16px 18px; }
-    .nav-steps { display: none; }
-    .page-wrap { grid-template-columns: 1fr; padding: 88px 16px 60px; gap: 28px; }
-    .form-panel { padding: 30px 22px; border-radius: 20px; }
+    nav { padding: 14px 16px; }
+    .nav-center { display: none; }
+    .page-wrap { grid-template-columns: 1fr; padding: 84px 14px 50px; gap: 24px; }
+    .form-panel { padding: 28px 18px; border-radius: 20px; }
     .form-grid { grid-template-columns: 1fr; }
+    .form-grid.cols3 { grid-template-columns: 1fr 1fr; }
+    .themes-grid { grid-template-columns: repeat(5, 1fr); }
     .preview-panel { position: static; }
   }
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="index.html" class="logo-klyx">KLYX</a>
-  <div class="nav-steps">
-    <div class="nav-step done">
-      <div class="sn">✓</div>
-      <span>الطلب</span>
-    </div>
+  <a href="index-3.html" class="logo-klyx">KLYX</a>
+  <div class="nav-center">
+    <div class="nav-step done"><div class="sn">✓</div><span data-i18n="step_order">الطلب</span></div>
     <div class="step-sep"></div>
-    <div class="nav-step active">
-      <div class="sn">2</div>
-      <span>البطاقة الرقمية</span>
-    </div>
+    <div class="nav-step active"><div class="sn">2</div><span data-i18n="step_card">البطاقة الرقمية</span></div>
     <div class="step-sep"></div>
-    <div class="nav-step">
-      <div class="sn">3</div>
-      <span>الدفع</span>
+    <div class="nav-step"><div class="sn">3</div><span data-i18n="step_payment">الدفع</span></div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('ar')">العربية</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
   </div>
 </nav>
@@ -331,57 +165,55 @@
 <div class="page-wrap">
   <!-- FORM -->
   <div class="form-panel">
-    <div class="form-header">
-      <div class="section-pill"><div class="dot"></div>الخطوة 2 من 3</div>
-      <h1 class="form-title">أنشئ <span class="grad-text">بطاقتك الرقمية</span></h1>
-      <p class="form-sub">بطاقتك الرقمية ستظهر عند المسح بالـ NFC أو الـ QR</p>
-    </div>
+    <div class="section-pill"><div class="dot"></div><span data-i18n="step_label">الخطوة 2 من 3</span></div>
+    <h1 class="form-title"><span data-i18n="title_create">أنشئ</span> <span class="grad-text" data-i18n="title_card">بطاقتك الرقمية</span></h1>
+    <p class="form-sub" data-i18n="subtitle">بطاقتك الرقمية ستظهر عند المسح بالـ NFC أو الـ QR</p>
 
     <!-- LOGO -->
     <div class="form-section">
-      <div class="form-section-label">🖼 الصورة / الشعار</div>
-      <div class="logo-upload-area" id="uploadArea" onclick="document.getElementById('logoInput').click()">
+      <div class="form-section-label" data-i18n="section_logo">🖼 الصورة / الشعار</div>
+      <div class="logo-upload-area" id="uploadArea">
         <img id="logoPreview" src="" alt="preview" />
         <div class="upload-icon" id="uploadIcon">📸</div>
-        <div class="upload-text" id="uploadText">ارفع صورتك أو شعار شركتك</div>
-        <div class="upload-hint">PNG, JPG أو SVG — حتى 2MB</div>
+        <div class="upload-text" id="uploadText" data-i18n="upload_text">ارفع صورتك أو شعار شركتك</div>
+        <div class="upload-hint" data-i18n="upload_hint">PNG, JPG أو SVG — حتى 2MB</div>
         <input type="file" id="logoInput" accept="image/*" onchange="handleLogo(event)" />
       </div>
     </div>
 
     <!-- PERSONAL INFO -->
     <div class="form-section">
-      <div class="form-section-label">👤 المعلومات الشخصية</div>
+      <div class="form-section-label" data-i18n="section_personal">👤 المعلومات الشخصية</div>
       <div class="form-grid">
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">✏️</span> الاسم الكامل</label>
-          <input class="field" id="fullName" placeholder="مثال: أحمد بن علي" oninput="updatePreview()" />
+          <label class="field-label" data-i18n="label_name">✏️ الاسم الكامل</label>
+          <input class="field" id="fullName" data-i18n-ph="ph_name" placeholder="مثال: أحمد بن علي" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">💼</span> المسمى الوظيفي</label>
-          <input class="field" id="jobTitle" placeholder="مثال: مصمم جرافيك" oninput="updatePreview()" />
+          <label class="field-label" data-i18n="label_job">💼 المسمى الوظيفي</label>
+          <input class="field" id="jobTitle" data-i18n-ph="ph_job" placeholder="مثال: مصمم جرافيك" oninput="updatePreview()" />
         </div>
       </div>
     </div>
 
     <!-- CONTACT -->
     <div class="form-section">
-      <div class="form-section-label">📞 وسائل التواصل</div>
+      <div class="form-section-label" data-i18n="section_contact">📞 وسائل التواصل</div>
       <div class="form-grid">
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">📱</span> رقم الهاتف</label>
+          <label class="field-label" data-i18n="label_phone">📱 رقم الهاتف</label>
           <input class="field" id="cardPhone" dir="ltr" placeholder="+216 XX XXX XXX" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">💬</span> واتساب</label>
+          <label class="field-label" data-i18n="label_whatsapp">💬 واتساب</label>
           <input class="field" id="whatsapp" dir="ltr" placeholder="+216 XX XXX XXX" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">✉️</span> البريد الإلكتروني</label>
+          <label class="field-label" data-i18n="label_email">✉️ البريد الإلكتروني</label>
           <input class="field" id="email" dir="ltr" placeholder="you@example.com" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">🌐</span> الموقع الإلكتروني</label>
+          <label class="field-label" data-i18n="label_website">🌐 الموقع</label>
           <input class="field" id="website" dir="ltr" placeholder="www.yoursite.com" oninput="updatePreview()" />
         </div>
       </div>
@@ -389,33 +221,88 @@
 
     <!-- SOCIAL -->
     <div class="form-section">
-      <div class="form-section-label">🔗 وسائل التواصل الاجتماعي</div>
+      <div class="form-section-label" data-i18n="section_social">🔗 وسائل التواصل الاجتماعي <small style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7" data-i18n="optional">(اختياري)</small></div>
       <div class="form-grid">
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">📸</span> Instagram</label>
+          <label class="field-label">📸 Instagram</label>
           <input class="field" id="instagram" dir="ltr" placeholder="@username" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">👥</span> Facebook</label>
+          <label class="field-label">👥 Facebook</label>
           <input class="field" id="facebook" dir="ltr" placeholder="facebook.com/page" oninput="updatePreview()" />
         </div>
         <div class="field-wrap">
-          <label class="field-label"><span class="fi">💼</span> LinkedIn</label>
+          <label class="field-label">💼 LinkedIn</label>
           <input class="field" id="linkedin" dir="ltr" placeholder="linkedin.com/in/you" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">🎵 TikTok</label>
+          <input class="field" id="tiktok" dir="ltr" placeholder="@username" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">🐦 X (Twitter)</label>
+          <input class="field" id="twitter" dir="ltr" placeholder="@username" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">▶️ YouTube</label>
+          <input class="field" id="youtube" dir="ltr" placeholder="youtube.com/c/..." oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">👻 Snapchat</label>
+          <input class="field" id="snapchat" dir="ltr" placeholder="@username" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">✈️ Telegram</label>
+          <input class="field" id="telegram" dir="ltr" placeholder="@username" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">🐙 GitHub</label>
+          <input class="field" id="github" dir="ltr" placeholder="github.com/you" oninput="updatePreview()" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">🎨 Behance</label>
+          <input class="field" id="behance" dir="ltr" placeholder="behance.net/you" oninput="updatePreview()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- COLOR THEME -->
+    <div class="form-section">
+      <div class="form-section-label" data-i18n="section_theme">🎨 ثيم البطاقة</div>
+      <div class="themes-grid" id="themesGrid">
+        <div class="theme-opt selected" onclick="selectTheme('purple', this)" title="KLYX Purple">
+          <div class="theme-swatch" style="background: linear-gradient(135deg, #7c3aed, #3b82f6)"></div>
+          <div class="theme-name">KLYX</div>
+        </div>
+        <div class="theme-opt" onclick="selectTheme('dark', this)" title="Dark Luxury">
+          <div class="theme-swatch" style="background: linear-gradient(135deg, #1a1a2e, #16213e)"></div>
+          <div class="theme-name">Dark</div>
+        </div>
+        <div class="theme-opt" onclick="selectTheme('blue', this)" title="Blue Neon">
+          <div class="theme-swatch" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4)"></div>
+          <div class="theme-name">Neon</div>
+        </div>
+        <div class="theme-opt" onclick="selectTheme('gold', this)" title="Gold Luxury">
+          <div class="theme-swatch" style="background: linear-gradient(135deg, #d97706, #f59e0b)"></div>
+          <div class="theme-name">Gold</div>
+        </div>
+        <div class="theme-opt" onclick="selectTheme('white', this)" title="White Minimal">
+          <div class="theme-swatch" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #cbd5e1;"></div>
+          <div class="theme-name">White</div>
         </div>
       </div>
     </div>
 
     <div class="form-actions">
-      <button class="btn-primary" onclick="continueToPayment()">المتابعة إلى الدفع ←</button>
-      <button class="btn-secondary" onclick="saveAndExit()">💾 حفظ والمتابعة لاحقاً</button>
+      <button class="btn-primary" onclick="continueToPayment()"><span data-i18n="btn_continue">المتابعة إلى الدفع ←</span></button>
+      <button class="btn-secondary" onclick="saveAndExit()"><span data-i18n="btn_save">💾 حفظ والمتابعة لاحقاً</span></button>
     </div>
   </div>
 
   <!-- LIVE PREVIEW -->
   <div class="preview-panel">
-    <div class="preview-label">✨ معاينة بطاقتك الرقمية</div>
-    <div class="card-preview">
+    <div class="preview-label" data-i18n="preview_label">✨ معاينة بطاقتك الرقمية</div>
+    <div class="card-preview" id="cardPreview">
       <div class="cp-grid"></div>
       <div class="cp-top">
         <span class="cp-brand">KLYX</span>
@@ -425,29 +312,12 @@
         <div class="cp-avatar" id="previewAvatar">K</div>
       </div>
       <div class="cp-info">
-        <div class="cp-name" id="previewName">اسمك هنا</div>
-        <div class="cp-role" id="previewRole">مسماك الوظيفي</div>
-        <div class="cp-badge"><div class="cp-bd"></div>بطاقة KLYX الرقمية</div>
+        <div class="cp-name" id="previewName" data-i18n-default="your_name">اسمك هنا</div>
+        <div class="cp-role" id="previewRole" data-i18n-default="your_job">مسماك الوظيفي</div>
+        <div class="cp-badge"><div class="cp-bd"></div><span data-i18n="klyx_card">بطاقة KLYX الرقمية</span></div>
       </div>
-      <div class="cp-links" id="previewLinks">
-        <div class="cp-link">
-          <div class="cp-link-icon" style="background:rgba(34,197,94,.15);">📱</div>
-          <span id="previewPhone">رقم هاتفك</span>
-        </div>
-        <div class="cp-link">
-          <div class="cp-link-icon" style="background:rgba(37,211,102,.15);">💬</div>
-          <span id="previewWhatsapp">واتساب</span>
-        </div>
-        <div class="cp-link">
-          <div class="cp-link-icon" style="background:rgba(124,58,237,.15);">✉️</div>
-          <span id="previewEmail">بريدك الإلكتروني</span>
-        </div>
-        <div class="cp-link">
-          <div class="cp-link-icon" style="background:rgba(225,48,108,.15);">📸</div>
-          <span id="previewInstagram">Instagram</span>
-        </div>
-      </div>
-      <button class="cp-save-btn">💾 حفظ في جهات الاتصال</button>
+      <div class="cp-links" id="previewLinks"></div>
+      <button class="cp-save-btn" id="cpSaveBtn" data-i18n="save_contact">💾 حفظ في جهات الاتصال</button>
     </div>
     <div class="step-indicator">
       <div class="si"></div>
@@ -458,85 +328,282 @@
 </div>
 
 <script>
-  // Load order data from previous step
-  const order = JSON.parse(sessionStorage.getItem('klyxOrder') || '{}');
-  if (order.name) {
-    document.getElementById('fullName').value = order.name;
-    document.getElementById('cardPhone').value = order.phone || '';
-    updatePreview();
+// ===== TRANSLATIONS =====
+const T = {
+  ar: {
+    step_order:'الطلب', step_card:'البطاقة الرقمية', step_payment:'الدفع',
+    step_label:'الخطوة 2 من 3', title_create:'أنشئ', title_card:'بطاقتك الرقمية',
+    subtitle:'بطاقتك الرقمية ستظهر عند المسح بالـ NFC أو الـ QR',
+    section_logo:'🖼 الصورة / الشعار', upload_text:'ارفع صورتك أو شعار شركتك',
+    upload_hint:'PNG, JPG أو SVG — حتى 2MB', section_personal:'👤 المعلومات الشخصية',
+    label_name:'✏️ الاسم الكامل', ph_name:'مثال: أحمد بن علي',
+    label_job:'💼 المسمى الوظيفي', ph_job:'مثال: مصمم جرافيك',
+    section_contact:'📞 وسائل التواصل',
+    label_phone:'📱 رقم الهاتف', label_whatsapp:'💬 واتساب',
+    label_email:'✉️ البريد الإلكتروني', label_website:'🌐 الموقع',
+    section_social:'🔗 وسائل التواصل الاجتماعي', optional:'(اختياري)',
+    section_theme:'🎨 ثيم البطاقة',
+    btn_continue:'المتابعة إلى الدفع ←', btn_save:'💾 حفظ والمتابعة لاحقاً',
+    preview_label:'✨ معاينة بطاقتك الرقمية', klyx_card:'بطاقة KLYX الرقمية',
+    save_contact:'💾 حفظ في جهات الاتصال',
+    your_name:'اسمك هنا', your_job:'مسماك الوظيفي',
+    err_name:'من فضلك أدخل اسمك الكامل', saved_msg:'تم حفظ البيانات. يمكنك المتابعة لاحقاً.',
+    dir:'rtl', lang:'ar'
+  },
+  fr: {
+    step_order:'Commande', step_card:'Carte Digitale', step_payment:'Paiement',
+    step_label:'Étape 2 sur 3', title_create:'Créez', title_card:'votre Carte Digitale',
+    subtitle:'Votre carte apparaîtra lors du scan NFC ou QR',
+    section_logo:'🖼 Photo / Logo', upload_text:'Téléchargez votre photo ou logo',
+    upload_hint:'PNG, JPG ou SVG — max 2MB', section_personal:'👤 Informations Personnelles',
+    label_name:'✏️ Nom Complet', ph_name:'Ex: Ahmed Ben Ali',
+    label_job:'💼 Titre / Fonction', ph_job:'Ex: Designer Graphique',
+    section_contact:'📞 Coordonnées',
+    label_phone:'📱 Téléphone', label_whatsapp:'💬 WhatsApp',
+    label_email:'✉️ Email', label_website:'🌐 Site Web',
+    section_social:'🔗 Réseaux Sociaux', optional:'(optionnel)',
+    section_theme:'🎨 Thème de Carte',
+    btn_continue:'Continuer au Paiement →', btn_save:'💾 Sauvegarder pour plus tard',
+    preview_label:'✨ Aperçu de votre Carte', klyx_card:'Carte Digitale KLYX',
+    save_contact:'💾 Enregistrer le Contact',
+    your_name:'Votre nom', your_job:'Votre titre',
+    err_name:'Veuillez entrer votre nom complet', saved_msg:'Données sauvegardées.',
+    dir:'ltr', lang:'fr'
+  },
+  en: {
+    step_order:'Order', step_card:'Digital Card', step_payment:'Payment',
+    step_label:'Step 2 of 3', title_create:'Create', title_card:'your Digital Card',
+    subtitle:'Your card will appear when scanning via NFC or QR',
+    section_logo:'🖼 Photo / Logo', upload_text:'Upload your photo or company logo',
+    upload_hint:'PNG, JPG or SVG — up to 2MB', section_personal:'👤 Personal Information',
+    label_name:'✏️ Full Name', ph_name:'e.g. Ahmed Ben Ali',
+    label_job:'💼 Job Title', ph_job:'e.g. Graphic Designer',
+    section_contact:'📞 Contact Details',
+    label_phone:'📱 Phone Number', label_whatsapp:'💬 WhatsApp',
+    label_email:'✉️ Email Address', label_website:'🌐 Website',
+    section_social:'🔗 Social Networks', optional:'(optional)',
+    section_theme:'🎨 Card Theme',
+    btn_continue:'Continue to Payment →', btn_save:'💾 Save & Continue Later',
+    preview_label:'✨ Live Card Preview', klyx_card:'KLYX Digital Card',
+    save_contact:'💾 Save Contact',
+    your_name:'Your name', your_job:'Your job title',
+    err_name:'Please enter your full name', saved_msg:'Data saved. You can continue later.',
+    dir:'ltr', lang:'en'
   }
+};
 
-  function handleLogo(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const src = ev.target.result;
-      const prev = document.getElementById('logoPreview');
-      prev.src = src;
-      prev.style.display = 'block';
-      document.getElementById('uploadIcon').style.display = 'none';
-      document.getElementById('uploadText').textContent = 'تم رفع الصورة ✓';
+let currentLang = localStorage.getItem('klyxLang') || 'ar';
 
-      // Update card preview avatar
-      const avatar = document.getElementById('previewAvatar');
-      avatar.innerHTML = `<img src="${src}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('klyxLang', lang);
+  applyLang();
+}
 
-      sessionStorage.setItem('klyxLogo', src);
-    };
-    reader.readAsDataURL(file);
-  }
+function applyLang() {
+  const t = T[currentLang];
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = t.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (t[key]) el.placeholder = t[key];
+  });
+  // Update active lang button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const map = {ar:'ar', fr:'fr', en:'en'};
+    btn.classList.toggle('active', map[currentLang] && btn.textContent.includes(currentLang === 'ar' ? 'العربية' : currentLang.toUpperCase()));
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (currentLang === 'ar' && btn.textContent === 'العربية') btn.classList.add('active');
+    else if (currentLang === 'fr' && btn.textContent === 'FR') btn.classList.add('active');
+    else if (currentLang === 'en' && btn.textContent === 'EN') btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+  updatePreview();
+}
 
-  function updatePreview() {
-    const name = document.getElementById('fullName').value || 'اسمك هنا';
-    const role = document.getElementById('jobTitle').value || 'مسماك الوظيفي';
-    const phone = document.getElementById('cardPhone').value || 'رقم هاتفك';
-    const wa = document.getElementById('whatsapp').value || 'واتساب';
-    const email = document.getElementById('email').value || 'بريدك الإلكتروني';
-    const ig = document.getElementById('instagram').value || 'Instagram';
+// ===== THEMES =====
+const THEMES = {
+  purple: { grad:'linear-gradient(135deg,#7c3aed,#3b82f6,#06b6d4)', glow:'rgba(124,58,237,.45)', bg1:'#1a1040', bg2:'#0f0a2e' },
+  dark:   { grad:'linear-gradient(135deg,#6366f1,#4f46e5)', glow:'rgba(99,102,241,.45)', bg1:'#0f0f1a', bg2:'#08080f' },
+  blue:   { grad:'linear-gradient(135deg,#0ea5e9,#06b6d4)', glow:'rgba(14,165,233,.45)', bg1:'#0c1a2e', bg2:'#071524' },
+  gold:   { grad:'linear-gradient(135deg,#d97706,#f59e0b)', glow:'rgba(217,119,6,.45)', bg1:'#1a1200', bg2:'#0f0b00' },
+  white:  { grad:'linear-gradient(135deg,#7c3aed,#3b82f6)', glow:'rgba(124,58,237,.2)', bg1:'#ffffff', bg2:'#f1f5f9' }
+};
+let selectedTheme = sessionStorage.getItem('klyxTheme') || 'purple';
 
-    document.getElementById('previewName').textContent = name;
-    document.getElementById('previewRole').textContent = role;
-    document.getElementById('previewPhone').textContent = phone;
-    document.getElementById('previewWhatsapp').textContent = wa;
-    document.getElementById('previewEmail').textContent = email;
-    document.getElementById('previewInstagram').textContent = ig;
+function selectTheme(name, el) {
+  selectedTheme = name;
+  sessionStorage.setItem('klyxTheme', name);
+  document.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  applyThemeToPreview();
+}
 
-    // Update avatar initials
-    const avatar = document.getElementById('previewAvatar');
-    if (!document.getElementById('logoPreview').style.display || document.getElementById('logoPreview').style.display === 'none') {
-      avatar.textContent = name.charAt(0).toUpperCase() || 'K';
+function applyThemeToPreview() {
+  const th = THEMES[selectedTheme] || THEMES.purple;
+  const root = document.documentElement;
+  root.style.setProperty('--th-grad', th.grad);
+  root.style.setProperty('--th-glow', th.glow);
+  root.style.setProperty('--th-bg1', th.bg1);
+  root.style.setProperty('--th-bg2', th.bg2);
+  // Update text colors for white theme
+  const cpLinks = document.querySelectorAll('.cp-link span, .cp-name, .cp-role, .cp-bd-text');
+  const isWhite = selectedTheme === 'white';
+  document.getElementById('cardPreview').style.background = `linear-gradient(160deg, ${th.bg1}, ${th.bg2})`;
+  document.querySelectorAll('.cp-name').forEach(el => el.style.color = isWhite ? '#1a1040' : 'white');
+  document.querySelectorAll('.cp-role').forEach(el => el.style.color = isWhite ? '#64748b' : 'rgba(255,255,255,.5)');
+  document.querySelectorAll('.cp-link').forEach(el => {
+    el.style.background = isWhite ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.07)';
+    el.style.borderColor = isWhite ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.1)';
+  });
+  document.querySelectorAll('.cp-link span').forEach(el => el.style.color = isWhite ? '#1a1040' : 'rgba(255,255,255,.75)');
+}
+
+// ===== LOGO =====
+function handleLogo(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    const prev = document.getElementById('logoPreview');
+    prev.src = src; prev.style.display = 'block';
+    document.getElementById('uploadIcon').style.display = 'none';
+    document.getElementById('uploadText').textContent = '✓ تم الرفع';
+    document.getElementById('previewAvatar').innerHTML = `<img src="${src}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+    sessionStorage.setItem('klyxLogo', src);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== PREVIEW =====
+const SOCIAL_ICONS = {
+  instagram:['📸','rgba(225,48,108,.15)'],
+  facebook:['👥','rgba(59,130,246,.15)'],
+  linkedin:['💼','rgba(10,102,194,.15)'],
+  tiktok:['🎵','rgba(0,0,0,.2)'],
+  twitter:['🐦','rgba(29,161,242,.15)'],
+  youtube:['▶️','rgba(255,0,0,.15)'],
+  snapchat:['👻','rgba(255,252,0,.15)'],
+  telegram:['✈️','rgba(37,145,208,.15)'],
+  github:['🐙','rgba(255,255,255,.1)'],
+  behance:['🎨','rgba(23,105,255,.15)']
+};
+
+function updatePreview() {
+  const t = T[currentLang];
+  const name = document.getElementById('fullName').value || t.your_name;
+  const role = document.getElementById('jobTitle').value || t.your_job;
+
+  document.getElementById('previewName').textContent = name;
+  document.getElementById('previewRole').textContent = role;
+
+  // Update avatar initials
+  const logo = sessionStorage.getItem('klyxLogo');
+  if (!logo) document.getElementById('previewAvatar').textContent = name.charAt(0).toUpperCase() || 'K';
+
+  // Build links
+  const links = [];
+  const phone = document.getElementById('cardPhone').value;
+  const wa = document.getElementById('whatsapp').value;
+  const email = document.getElementById('email').value;
+  const website = document.getElementById('website').value;
+
+  if (phone) links.push(`<div class="cp-link"><div class="cp-link-icon" style="background:rgba(34,197,94,.15)">📱</div><span>${phone}</span></div>`);
+  if (wa) links.push(`<div class="cp-link"><div class="cp-link-icon" style="background:rgba(37,211,102,.15)">💬</div><span>${wa}</span></div>`);
+  if (email) links.push(`<div class="cp-link"><div class="cp-link-icon" style="background:rgba(124,58,237,.15)">✉️</div><span>${email}</span></div>`);
+  if (website) links.push(`<div class="cp-link"><div class="cp-link-icon" style="background:rgba(59,130,246,.15)">🌐</div><span>${website}</span></div>`);
+
+  ['instagram','facebook','linkedin','tiktok','twitter','youtube'].forEach(id => {
+    const val = document.getElementById(id).value;
+    if (val && links.length < 7) {
+      const [icon, bg] = SOCIAL_ICONS[id];
+      links.push(`<div class="cp-link"><div class="cp-link-icon" style="background:${bg}">${icon}</div><span>${val}</span></div>`);
     }
+  });
+
+  document.getElementById('previewLinks').innerHTML = links.slice(0, 6).join('');
+  // Re-apply theme colors
+  applyThemeToPreview();
+}
+
+// ===== COLLECT DATA =====
+function collectCardData() {
+  const get = id => document.getElementById(id).value.trim();
+  return {
+    fullName: get('fullName'), jobTitle: get('jobTitle'),
+    phone: get('cardPhone'), whatsapp: get('whatsapp'),
+    email: get('email'), website: get('website'),
+    instagram: get('instagram'), facebook: get('facebook'),
+    linkedin: get('linkedin'), tiktok: get('tiktok'),
+    twitter: get('twitter'), youtube: get('youtube'),
+    snapchat: get('snapchat'), telegram: get('telegram'),
+    github: get('github'), behance: get('behance'),
+    logo: sessionStorage.getItem('klyxLogo') || '',
+    theme: selectedTheme
+  };
+}
+
+function continueToPayment() {
+  const name = document.getElementById('fullName').value.trim();
+  if (!name) { alert(T[currentLang].err_name); return; }
+  sessionStorage.setItem('klyxCard', JSON.stringify(collectCardData()));
+  window.location.href = 'payment.html';
+}
+
+function saveAndExit() {
+  sessionStorage.setItem('klyxCard', JSON.stringify(collectCardData()));
+  alert(T[currentLang].saved_msg);
+}
+
+// ===== INIT =====
+function init() {
+  // Restore saved card data
+  const saved = JSON.parse(sessionStorage.getItem('klyxCard') || '{}');
+  const order = JSON.parse(sessionStorage.getItem('klyxOrder') || '{}');
+  const fields = {fullName:'fullName', jobTitle:'jobTitle', phone:'cardPhone',
+    whatsapp:'whatsapp', email:'email', website:'website',
+    instagram:'instagram', facebook:'facebook', linkedin:'linkedin',
+    tiktok:'tiktok', twitter:'twitter', youtube:'youtube',
+    snapchat:'snapchat', telegram:'telegram', github:'github', behance:'behance'};
+
+  Object.entries(fields).forEach(([key, id]) => {
+    const val = saved[key] || (key === 'fullName' ? order.name : '') || (key === 'phone' ? order.phone : '');
+    if (val) document.getElementById(id).value = val;
+  });
+
+  if (saved.logo) {
+    document.getElementById('logoPreview').src = saved.logo;
+    document.getElementById('logoPreview').style.display = 'block';
+    document.getElementById('uploadIcon').style.display = 'none';
+    document.getElementById('previewAvatar').innerHTML = `<img src="${saved.logo}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
   }
 
-  function saveCardData() {
-    const cardData = {
-      fullName: document.getElementById('fullName').value,
-      jobTitle: document.getElementById('jobTitle').value,
-      phone: document.getElementById('cardPhone').value,
-      whatsapp: document.getElementById('whatsapp').value,
-      email: document.getElementById('email').value,
-      website: document.getElementById('website').value,
-      instagram: document.getElementById('instagram').value,
-      facebook: document.getElementById('facebook').value,
-      linkedin: document.getElementById('linkedin').value,
-      logo: sessionStorage.getItem('klyxLogo') || '',
-    };
-    sessionStorage.setItem('klyxCard', JSON.stringify(cardData));
-    return cardData;
+  // Restore theme
+  if (saved.theme) {
+    selectedTheme = saved.theme;
+    document.querySelectorAll('.theme-opt').forEach((el, i) => {
+      el.classList.remove('selected');
+      const names = ['purple','dark','blue','gold','white'];
+      if (names[i] === selectedTheme) el.classList.add('selected');
+    });
   }
 
-  function continueToPayment() {
-    const name = document.getElementById('fullName').value.trim();
-    if (!name) { alert('من فضلك أدخل اسمك الكامل'); return; }
-    saveCardData();
-    window.location.href = 'payment.html';
-  }
+  applyLang();
+  applyThemeToPreview();
+  updatePreview();
+}
 
-  function saveAndExit() {
-    saveCardData();
-    alert('تم حفظ البيانات. يمكنك المتابعة لاحقاً من نفس المتصفح.');
-  }
+init();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
+Sortie
+
+Done
